@@ -8,12 +8,12 @@ const LinkedListFactory = () => {
     //Adds node to end of list
     function append (value) {
         //New node is created
-        const node = Node();
-        node.value = value;
+        const newNode = Node();
+        newNode.value = value;
 
         //If there is no head, new node is assigned to head
         if (head === null) {
-            head = node;
+            head = newNode;
         } else {
         //Otherwise, start at head and traverse list until currentNode.next does
         //not exist
@@ -23,7 +23,7 @@ const LinkedListFactory = () => {
                 currentNode = currentNode.next;
             }
 
-            currentNode.next = node;
+            currentNode.next = newNode;
         }
 
         //Increase length by 1
@@ -34,7 +34,16 @@ const LinkedListFactory = () => {
 
     //Adds node to beginning of list (becomes head)
     function prepend (value) {
-        //head = Node(value);
+        const newNode = Node();
+        newNode.value = value;
+
+        newNode.next = head;
+
+        head = newNode;
+
+        length++;
+        console.log(`${value} has been prepended to this linked list`);
+        return true;
     }
 
     //Returns number of nodes in list
@@ -85,12 +94,17 @@ const LinkedListFactory = () => {
 
     //Removes last element from list
     function pop () {
-        let lastNode = tail();
+        let lastIndex = length - 1;
 
-        //Do stuff here
+        //Return false if list is empty
+        if (lastIndex < 0) {
+            console.log(`The linked list is empty`);
+            return false;
+        }
 
-        length--;
-        console.log();
+        //Remove item at last index
+        removeAt(lastIndex);
+        return true;
     }
 
     //Returns true or false based on if value is in list
@@ -192,22 +206,53 @@ const LinkedListFactory = () => {
 
     //(Extra credit) Removes node at given index
     function removeAt (index) {
+        //Check if index is within the range of the linked list
+        const isValidIndex = index > -1 && index <= length;
+        if (!isValidIndex) {
+            console.log(`The provided index of ${index} is outside of the linked list's range of 0 - ${size() - 1}`);
+            return false
+        }
 
+        let currentNode = head;
+
+        const isHeadIndex = index === 0;
+
+        //If index is 0, make this node the new head and the old head is .next
+        if (isHeadIndex) {
+            head = currentNode.next;
+        } else {
+        //Otherwise, traverse the list until the index is reached
+        //then set previousNode.next to currentNode.next, breaking the link to
+        //the node at the specified index
+            let position = 0;
+            let previousNode = null;
+
+            while (position++ < index) {
+                previousNode = currentNode;
+                currentNode = currentNode.next;
+            }
+
+            previousNode.next = currentNode.next;
+        }
+
+        length--;
+        console.log(`${currentNode.value} has been removed at index ${index}`);
+        return currentNode.value;
     }
 
     return {
-        append,
-        prepend,
-        size,
-        showHead,
-        tail,
+        append, 
+        prepend, 
+        size, 
+        showHead, 
+        tail, 
         at,
         pop,
-        contains,
-        find,
-        toString,
-        insertAt,
-        removeAt,
+        contains, 
+        find, 
+        toString, 
+        insertAt, 
+        removeAt, 
     }
 }
 
